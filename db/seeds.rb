@@ -7,25 +7,28 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
-require 'json'
+
 require 'open-uri'
-
-puts "Cleaning up database..."
+puts "Cleaning the DB...."
 Movie.destroy_all
+# List.destroy_all
 
-puts "Fetching movies from TMDB..."
-url = "https://tmkitt.lewagon.com/db/movie/top_rated"
-movie_serialized = URI.open(url).read
-movies = JSON.parse(movie_serialized)["results"]
+# the Le Wagon copy of the API
+puts "Creating movies.... \n"
+(1..5).to_a.each do |num|
+  url = "http://tmdb.lewagon.com/movie/top_rated?page=#{num}"
+  response = JSON.parse(URI.open(url).read)
 
-puts "Creating movies..."
-movies.first(10).each do |movie|
-  Movie.create!(
-    title: movie["title"],
-    overview: movie["overview"],
-    poster_url: "https://image.tmdb.org/t/p/original#{movie["poster_path"]}",
-    rating: movie["vote_average"]
-  )
+  response['results'].each do |movie_hash|
+    puts "...creating the movie #{movie_hash['title']}..."
+    puts
+    # create an instance with the hash
+    Movie.create!(
+      poster_url: "https://image.tmdb.org/t/p/w500" + movie_hash['poster_path'],
+      rating: movie_hash['vote_average'],
+      title: movie_hash['title'],
+      overview: movie_hash['overview']
+    )
+  end
 end
-
-puts "Movies created!"
+puts "... created #{Movie.count} movies."

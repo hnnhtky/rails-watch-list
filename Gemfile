@@ -8,6 +8,11 @@ gem "font-awesome-sass", "~> 6.1"
 gem "simple_form"
 gem "sassc-rails"
 
+gem 'dotenv-rails', groups: [:development, :test]
+
+# Gemfile
+gem 'cloudinary', '~> 1.16.0'
+
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.1.5", ">= 7.1.5.1"
 
